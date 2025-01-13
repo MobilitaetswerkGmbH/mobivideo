@@ -18,8 +18,10 @@ Zuerst muss das richtige Betriebssystem auf die SD Karte geflashed werden. Dafü
 Raspberry Pi Modell (Raspberry Pi Zero), Betriebssystem (Raspberry PI OS Lite (32-Bit)), und SD Karte auswählen. 
 Um die erweiterten Einstellungen zu öffnen <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd> drücken.
 Hier muss der Hostname eingerichtet werden, die Wi-Fi	Anmeldedaten (vom Netzwerk im Büro) sowie Zeitzone und Tastaturlayout gewählt werden. Als Benutzernamen "pi" beibehalten und Passwort vergeben.
+
 ![Raspberry Pi Imager allgemeine Einstellungen](media/imager-allgemein.png)
 ![Raspberry Pi Imager Dienste Einstellungen](media/imager-dienste.png)
+
 Anschließend <kbd>Weiter</kbd> &rarr; <kbd>Ja</kbd>.
 Nachdem der Schreib-Prozess abgeschlossen ist kann die SD Karte in den Raspberry Pi eingesteckt werden.
 ### Raspberry einrichten

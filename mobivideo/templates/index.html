@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Recording and Live View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .form-container {
+            flex: 1;
+            margin-right: 20px;
+        }
+        .preview-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .time-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .time-container label {
+            margin-right: 10px;
+            line-height: 24px;
+        }
+        .time-container button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            font-size: 16px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin: 10px 0;
+        }
+        label {
+            margin-top: 10px;
+            line-height: 24px;
+        }
+        input[type="time"] {
+            margin-bottom: 10px;
+            padding: 5px;
+            font-size: 16px;
+        }
+        button {
+            margin: 5px 0;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        img {
+            margin-top: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Schedule Recording</h1>
+            <form action="/set_schedule" method="post">
+                <div class="time-container">
+                    <label for="start_time">Start Time (HH:MM):</label>
+                    <input type="time" id="start_time" name="start_time" required value="{{ current_schedule['start_time'] }}">
+                    <button type="button" onclick="setStartTimeToNow()">Set Start Time to Now</button>
+                </div>
+                <div class="time-container">
+                    <label for="stop_time">Stop Time (HH:MM):</label>
+                    <input type="time" id="stop_time" name="stop_time" required value="{{ current_schedule['stop_time'] }}">
+                </div>
+                <button type="submit">Set Schedule</button>
+            </form>
+            <h2>Current Schedule</h2>
+            <p>Start Time: {{ current_schedule['start_time'] }}</p>
+            <p>Stop Time: {{ current_schedule['stop_time'] }}</p>
+
+            <form action="/remove_schedule" method="post">
+                <button type="submit">Remove Schedule</button>
+            </form>
+            <h2 id="recording-status">Recording Status: {{ 'Recording' if is_recording else 'Not Recording' }}</h2>
+            <button id="stop-recording-btn" onclick="stopRecording()" style="display: {{ 'inline' if is_recording else 'none' }};">Stop Recording</button>
+            <form action="/disable_wifi_bluetooth" method="post">
+                <button type="submit">Disable Wi-Fi and Bluetooth</button>
+            </form>
+			<h1>File Transfer</h1>
+			<form action="/transfer" method="post">
+				<label for="password">Enter Password:</label>
+				<input type="password" id="password" name="password" required>
+				<button type="submit">Transfer Files</button>
+			</form>
+			{% if message %}
+				<p>{{ message }}</p>
+			{% endif %}
+        </div>
+        <div class="preview-container">
+            <script>
+                function setTimeToCurrent() {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+                    fetch('/set_time', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `new_time=${encodeURIComponent(formattedTime)}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Device time updated successfully!");
+                            location.reload();
+                        } else {
+                            alert("Failed to update device time.");
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            </script>
+            <h1>Device Time Control</h1>
+            <p>Current Device Time: {{ device_time }}</p>
+            <button onclick="setTimeToCurrent()">Set Device Time to Current System Time</button>
+			<h1>Preview</h1>
+            {% if is_recording %}
+                <p>Preview not available while recording.</p>
+            {% else %}
+                <form action="/capture_preview" method="post">
+                    <button type="submit">Capture Preview</button>
+                </form>
+                {% if preview_image %}
+                    <h2>Preview Image</h2>
+                    <img src="{{ preview_image }}" alt="Preview Image">
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        function setStartTimeToNow() {
+            fetch('/set_start_time_to_now', {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('start_time').value = data.time;
+                });
+        }
+
+        function stopRecording() {
+            fetch('/stop_recording', {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('recording-status').textContent = `Recording Status: ${data.is_recording ? 'Recording' : 'Not Recording'}`;
+                        const stopBtn = document.getElementById('stop-recording-btn');
+                        stopBtn.style.display = data.is_recording ? 'inline' : 'none';
+                        location.reload();
+                    }
+                });
+        }
+
+        function updateRecordingStatus(isRecording) {
+            const statusElement = document.getElementById('recording-status');
+            statusElement.textContent = isRecording ? 'Recording' : 'Not Recording';
+            const stopBtn = document.getElementById('stop-recording-btn');
+            stopBtn.style.display = isRecording ? 'inline' : 'none';
+        }
+    </script>
+</body>
+</html>

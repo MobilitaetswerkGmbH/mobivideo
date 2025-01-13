@@ -1,0 +1,13 @@
+[Unit]
+Description=Flask App to Record Traffic Videos
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/mobivideo
+Environment="PATH=/home/pi/mobivideo/venv/bin"
+ExecStart=/home/pi/mobivideo/venv/bin/python3 app.py
+
+[Install]
+WantedBy=multi-user.target

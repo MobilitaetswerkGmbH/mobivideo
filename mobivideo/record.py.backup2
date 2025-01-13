@@ -1,0 +1,110 @@
+import os
+import sys
+from datetime import datetime
+import time
+from picamera2 import Picamera2
+from picamera2.encoders import H264Encoder
+from picamera2.outputs import FfmpegOutput
+from PIL import Image, ImageDraw, ImageFont
+
+STOP_FLAG_FILE = "/tmp/recording_stop_flag"
+
+def check_stop_flag():
+    return os.path.exists(STOP_FLAG_FILE)
+
+def set_stop_flag():
+    with open(STOP_FLAG_FILE, 'w') as f:
+        f.write('stop')
+
+def clear_stop_flag():
+    if os.path.exists(STOP_FLAG_FILE):
+        os.remove(STOP_FLAG_FILE)
+
+def create_timestamp_overlay(picam2):
+    overlay = Image.new('RGBA', picam2.camera_properties['PixelArraySize'], (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
+    return overlay, draw, font
+
+def update_timestamp_overlay(picam2, overlay, draw, font):
+    draw.rectangle((0, 0, overlay.width, overlay.height), fill=(0, 0, 0, 0))
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    draw.text((10, 10), timestamp, font=font, fill=(255, 255, 255, 128))
+    picam2.set_overlay(overlay)
+
+def start_recording(duration=None, fps=15):
+    clear_stop_flag()
+    output_dir = os.path.expanduser("/home/pi/Videos")
+    os.makedirs(output_dir, exist_ok=True)
+
+    picam2 = Picamera2()
+    video_config = picam2.create_video_configuration(
+        main={"size": (800, 600), "format": "YUV420"},
+    )
+    picam2.configure(video_config)
+
+    #frame_duration = int(1000000 / fps)
+    #picam2.set_controls({"FrameDurationLimits": (frame_duration, frame_duration)})
+
+    encoder = H264Encoder(
+        bitrate=600000,
+        #repeat=False,
+        #iperiod=30 * fps  # I-frame interval
+        #framerate=fps,
+        #profile="high",
+        #level="4",
+        #quality=30
+    )
+
+    picam2.start()
+
+    overlay, draw, font = create_timestamp_overlay(picam2)
+
+    start_time = time.time()
+    segment_start_time = start_time
+
+    while not check_stop_flag():
+        current_time = time.time()
+        if duration and (current_time - start_time) > duration:
+            break
+
+        if current_time - segment_start_time >= 3600:  # Start a new segment every hour
+            if picam2.encoder:
+                picam2.stop_encoder()
+            segment_start_time = current_time
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_file = os.path.join(output_dir, f'{timestamp}.mp4')
+        
+        output = FfmpegOutput(output_file, audio=False)
+        picam2.start_encoder(encoder, output)
+        
+        while not check_stop_flag() and (time.time() - segment_start_time) < 3600:
+            update_timestamp_overlay(picam2, overlay, draw, font)
+            time.sleep(1)
+
+    picam2.stop_encoder()
+    picam2.stop()
+    print("Recording stopped.")
+
+def stop_recording():
+    set_stop_flag()
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: record.py start <device> [duration] or record.py stop")
+        sys.exit(1)
+
+    action = sys.argv[1]
+    if action == "start":
+        if len(sys.argv) < 3:
+            print("Usage: record.py start <device> [duration]")
+            sys.exit(1)
+        device = sys.argv[2]
+        duration = int(sys.argv[3]) if len(sys.argv) == 4 else None
+        start_recording(device, duration)
+    elif action == "stop":
+        stop_recording()
+    else:
+        print("Unknown action:", action)
+        sys.exit(1)

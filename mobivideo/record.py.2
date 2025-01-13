@@ -1,0 +1,67 @@
+import time
+import os
+import sys
+import datetime as dt
+import signal
+import picamerax
+
+STOP_FLAG_FILE = "/tmp/recording_stop_flag"
+#OUTPUT_DIR = "/home/pi/Videos"
+
+def check_stop_flag():
+    return os.path.exists(STOP_FLAG_FILE)
+
+def set_stop_flag():
+    with open(STOP_FLAG_FILE, 'w') as f:
+        f.write('stop')
+
+def clear_stop_flag():
+    if os.path.exists(STOP_FLAG_FILE):
+        os.remove(STOP_FLAG_FILE)
+
+def start_recording(duration=None):
+    clear_stop_flag()
+    output_dir = os.path.expanduser("/home/pi/Videos")
+    os.makedirs(output_dir, exist_ok=True)
+
+    while not check_stop_flag():
+        with picamerax.PiCamera(resolution=(800,600),framerate=15) as picam:
+            print("Recording")
+#            picam.start_preview()
+ #           picam.annotate_background = picamerax.Color('black')
+  #          picam.annotate_text = dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+   #         start = dt.datetime.now()
+            for filename in picam.record_sequence(f"{output_dir}/%d.h264" % i for i in range(1, 11)):
+    #            while (dt.datetime.now() - start).seconds < 30:
+     #               picam.annotate_text = dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+      #              picam.wait_recording(0.2)
+                picam.wait_recording(10)
+
+            if not check_stop_flag():
+                print("Restarting recording...")
+                time.sleep(5)  # Short delay before restarting
+
+def stop_recording():
+    set_stop_flag()
+
+def signal_handler(signum, frame):
+    stop_recording()
+
+if __name__ == "__main__":
+    import sys
+    
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    if len(sys.argv) < 2:
+        print("Usage: record.py start [duration] or record.py stop")
+        sys.exit(1)
+
+    action = sys.argv[1]
+    if action == "start":
+        duration = int(sys.argv[2]) if len(sys.argv) == 3 else None
+        start_recording(duration)
+    elif action == "stop":
+        stop_recording()
+    else:
+        print("Unknown action:", action)
+        sys.exit(1)

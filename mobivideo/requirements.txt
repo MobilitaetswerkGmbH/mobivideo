@@ -1,0 +1,5 @@
+colorzero==2.0
+flask==3.1.0
+importlib-metadata==8.5.0
+picamerax==24.3.21
+schedule==1.2.2

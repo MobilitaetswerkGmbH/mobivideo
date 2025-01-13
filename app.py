@@ -26,8 +26,8 @@ def get_device_time():
 
 def set_device_time(new_time):
     try:
-        os.system(f"sudo date -s '{new_time}'")
-        os.system("sudo hwclock -w")
+        os.system(f"/usr/bin/sudo /usr/bin/date -s '{new_time}'")
+        os.system("/usr/bin/sudo hwclock -w")
         return True
     except Exception as e:
         print(f"Error setting device time: {e}")

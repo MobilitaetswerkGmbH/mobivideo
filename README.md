@@ -14,19 +14,19 @@ Software um Verkehrs-Videos auf einem Raspberry Pi Zero aufzunehmen.
 ## Installation
 ### SD Karte vorbereiten 
 Zuerst muss das richtige Betriebssystem auf die SD Karte geflashed werden. Dafür den [Raspberry Pi Imager](https://www.raspberrypi.com/software/) herunterladen und installieren, die SD Karte einlegen und den Imager starten.
-![Raspberry Pi Imager]()
+![Raspberry Pi Imager](media/imager.png)
 Raspberry Pi Modell (Raspberry Pi Zero), Betriebssystem (Raspberry PI OS Lite (32-Bit)), und SD Karte auswählen. 
 Um die erweiterten Einstellungen zu öffnen <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd> drücken.
 Hier muss der Hostname eingerichtet werden, die Wi-Fi	Anmeldedaten (vom Netzwerk im Büro) sowie Zeitzone und Tastaturlayout gewählt werden. Als Benutzernamen "pi" beibehalten und Passwort vergeben.
-![Raspberry Pi Imager allgemeine Einstellungen]()
-![Raspberry Pi Imager Dienste Einstellungen]()
+![Raspberry Pi Imager allgemeine Einstellungen](media/imager-allgemein.png)
+![Raspberry Pi Imager Dienste Einstellungen](media/imager-dienste.png)
 Anschließend <kbd>Weiter</kbd> &rarr; <kbd>Ja</kbd>.
 Nachdem der Schreib-Prozess abgeschlossen ist kann die SD Karte in den Raspberry Pi eingesteckt werden.
 ### Raspberry einrichten
 Ist die SD Karte eingesteckt, kann der Raspberry gebootet werden. Dafür ein micro-USB Kabel in den mit "PWR IN"-beschrifteten Port stecken. Der Raspberry sollte sich nun automatisch mit dem im Setup angegebenen WLAN Netzwerk verbinden. Nach etwa 2 min sollte man sich jetzt per SSH mit dem Raspberry verbinden können. Dazu muss man selbst im gleichen WLAN Netzwerk sein. 
 In einem Terminal `ssh pi@mobipi01` eingeben.
 Wenn alles korrekt eingerichtet ist, wird man aufgefordert, den Host-Schlüssel zur Liste der bekannten Hosts hinzuzufügen (Antwort: Ja) und sollte dann mit dem Raspberry Pi verbunden sein.
-![ssh terminal]()
+![ssh terminal](media/ssh.png)
 Sollte der Raspberry nicht erreichbar sein, Raspberry Pi neu booten mit angeschlossenem Bildschirm.
 #### Update
 Raspberry Pi durch apt und reboot updaten.
@@ -238,6 +238,9 @@ In dieser Datei am Ende folgende Zeile einfügen und anschließend speichern.
 ```bash
 pi ALL=(ALL) NOPASSWD: /sbin/ifconfig wlan0 down, /usr/bin/sudo ifconfig uap0 down, /usr/sbin/hwclock, /usr/bin/sudo /usr/bin/date
 ```
+
+Anschließend kann das Interface in einem Browser unter der Adresse `hostname:5000` aufgerufen werden. `hostname` muss dabei durch den im Imager vergebenen ersetzt werden, z.B. `http://mobipi01:5000/`
+
 ## Erklärung Video Software
 Struktur:
  ```md

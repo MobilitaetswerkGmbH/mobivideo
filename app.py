@@ -157,14 +157,14 @@ def set_time():
 @app.route('/transfer', methods=['POST'])
 def transfer():
     global current_start_time, current_stop_time, is_recording
-    
+
     current_schedule = {
         'start_time': current_start_time.strftime("%H:%M") if current_start_time else '',
         'stop_time': current_stop_time.strftime("%H:%M") if current_stop_time else ''
     }
     device_time = get_device_time()
     preview_image = url_for('static', filename='preview.jpg') if os.path.exists('static/preview.jpg') else None
-    
+
     password = request.form.get('password')
 
     if password != CORRECT_PASSWORD:
@@ -189,4 +189,10 @@ def transfer():
 if __name__ == '__main__':
     if os.path.exists('static/preview.jpg'):
         os.remove('static/preview.jpg')
+    # Set the default schedule on startup
+    with app.test_request_context('/set_schedule', method='POST', data={
+        'start_time': '05:00',
+        'stop_time': '23:00'
+    }):
+        set_schedule()
     app.run(host='0.0.0.0', port=5000)

@@ -44,7 +44,7 @@ def start_recording(duration=None):
             camera.start_preview()
             camera.annotate_text = dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             camera.start_recording(
-                output = f"{OUTPUT_DIR}/{HOSTNAME}_{FRAMERATE}_{timestamp}.h264",
+                output = f"{OUTPUT_DIR}/{HOSTNAME}_FR{FRAMERATE}_{timestamp}.h264",
                 format = "h264",
     #           resize = (800, 600),
                 profile = "high",

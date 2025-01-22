@@ -259,5 +259,43 @@ Struktur:
 ```
 
 ### `app.py`
-```python
+Funktionalitäten:
+* Vorschaubild aufnehmen
+* Aufnahmen planen
+* Raspberry Pi Uhrzeit an Geräte Uhr angleichen (falls RTC nicht funktioniert)
+* WLAN deaktivieren (um Akku zu sparen)
+
+Die Transfer Data Funktionalität ist nicht vollständig implementiert
+
+### `record.py`
+Aufnahmen werden stündlich beendet und neu gestartet, um mögliche Fehler vorzubeugen und korrupte Video Dateien auf maximal 1h zu reduzieren. Diese Zeit kann über die Variable `SEGMENT_TIME` angepasst werden.
+Ist die Kamera anders verbaut, kann ihre Rotation angepasst werden: Zeile 36: `camera.rotation = 180` 
+`check_stop_flag()` wird verwendet, um Aufnahmen bei Fehlern neu zu starten, bei manueller Beendigung über das Web-Interface aber abzubrechen.
+Videos werden im Format `<hostname>_FR<fps>_<YYYY-MM-DD_HH-SS>.h264` benannt, somit müssen FPS und Anfangszeit bei Konvertierung mit OTVision nicht mehr manuell angegeben werden.
+
+## Nutzung
+### Am Standort
+ 1. Koffer am Standort öffnen und Akku anstecken. 
+ 2. Koffer verschließen und aufhängen.
+ 3. Im WLAN-Netzwerk des Geräts anmelden.
+ 4. Im Browser `http://<hostname>:5000` oder `http://10.42.0.1:5000` aufrufen.
+ 5. Mit "Capture Preview" Sichtfeld der Kamera überprüfen und eventuell Ausrichtung mit Stativkopf anpassen.
+ 6. Solange nicht der Standard Plan von 5:00-23:00 Uhr verwendet werden soll diesen anpassen. Mit "Set Schedule" bestätigen.
+ 7. "Disable Wi-Fi and Bluetooth" um Akku zu sparen.
+
+### Zurück im Büro
+Die aufgenommenen Videos können von den Geräten über WLAN mit `scp` heruntergeladen werden. Dafür muss ein Gerät angeschalten werden, sich mit dem WLAN Netzwerk verbunden werden und der folgende Befehl in der Konsole eingeben werden. Dabei wird erst die remote und dann die local-destination angegeben. 
+```bash 
+scp pi@hostname:/home/pi/Videos/*.h264 .\Desktop\Videos\ProjektName
 ```
+z.B.
+```bash 
+scp pi@mobipi01:/home/pi/Videos/*.h264 .\Desktop\Videos\Dresden
+```
+Anschließend können die Video Dateien auf dem Gerät gelöscht werden. Dafür mit Gerät per SSH verbinden und 
+```bash
+	rm Videos/*
+```
+eingeben.
+Nun den Vorgang mit den restlichen Geräten wiederholen.
+

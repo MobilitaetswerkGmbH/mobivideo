@@ -25,6 +25,7 @@ Hier muss der Hostname eingerichtet werden, die Wi-Fi	Anmeldedaten (vom Netzwerk
 Anschließend <kbd>Weiter</kbd> &rarr; <kbd>Ja</kbd>.
 Nachdem der Schreib-Prozess abgeschlossen ist kann die SD Karte in den Raspberry Pi eingesteckt werden.
 ### Raspberry einrichten
+Wichtig: für jede SD-Karte einen anderen Raspberry verwenden, da der SHA256-Hash unter *known_hosts* gespeichert wird und ansonsten keine Verbindung hergestellt werden kann. Alternativ müssen die Einträge aus *known_hosts* nach jedem Einrichten wieder gelöscht werden.
 Ist die SD Karte eingesteckt, kann der Raspberry gebootet werden. Dafür ein micro-USB Kabel in den mit "PWR IN"-beschrifteten Port stecken. Der Raspberry sollte sich nun automatisch mit dem im Setup angegebenen WLAN Netzwerk verbinden. Nach etwa 2 min sollte man sich jetzt per SSH mit dem Raspberry verbinden können. Dazu muss man selbst im gleichen WLAN Netzwerk sein. 
 In einem Terminal `ssh pi@mobipi01` eingeben.
 Wenn alles korrekt eingerichtet ist, wird man aufgefordert, den Host-Schlüssel zur Liste der bekannten Hosts hinzuzufügen (Antwort: Ja) und sollte dann mit dem Raspberry Pi verbunden sein.

@@ -70,7 +70,7 @@ Wir deaktivieren Bluetooth, die Kamera und die Onboard-LEDs. Dafür bearbeiten w
 	display_auto_detect=0
 	dtoverlay=i2c-rtc,pcf8523
 	```
-Mit STRG-O speichern, mit Enter den Dateipfad bestätigen un mit STRG-X den Editor verlassen.
+Speichere die Datei mit <kbd>Strg</kbd> + <kbd>O</kbd>, bestätige mit <kbd>Enter</kbd>, und schließe den Editor mit <kbd>Strg</kbd> + <kbd>X</kbd>.
  
 Um die neuen Einstellungen zu aktivieren muss der Raspberry neu gestartet werden.
 ```bash
@@ -93,15 +93,15 @@ Da der Raspberry Pi keine eigene Hardware-Uhr mitbringt, wird normalerweise davo
 2. **Überprüfen, ob die RTC funktioniert**
 	Installiere i2c-tools und überprüfe, ob die RTC erkannt wird:
 	```bash
-	sudo apt install i2c-tools -y
+	sudo apt install i2c-tools -y &&
 	sudo i2cdetect -y 1
 	```
 Du solltest eine Ausgabe mit mehreren Zeilen sehen, in denen `UU` in einer davon erscheint. Das zeigt an, dass die RTC erfolgreich erkannt wurde.
 
 Anschließend muss die fake-hardware Uhr noch deaktiviert werden.
 ```bash
-	sudo apt remove fake-hwclock -y
-	sudo update-rc.d -f fake-hwclock remove
+	sudo apt remove fake-hwclock -y &&
+	sudo update-rc.d -f fake-hwclock remove &&
 	sudo systemctl disable fake-hwclock
 ```
 Außerdem müssen bestimmte Zeilen in der Datei `/lib/udev/hwclock-set` kommentiert werden, um sicherzustellen, dass die RTC korrekt funktioniert:
@@ -181,6 +181,11 @@ Speichere die Datei mit <kbd>Strg</kbd> + <kbd>O</kbd>, bestätige mit <kbd>Ente
 	Damit die Kameras einen eigenen Hotspot erzeugen und gleichzeitig noch im Büro-WLAN sein können (z.B. um Dateien im Büro zu übertragen oder um einen Internetzugang für Updates etc. zu erhalten), muss der gleiche WLAN-Kanal wie im Büro-WLAN-Netzwerk verwendet werden (im Moment Kanal 1) da der Raspberry nur eine Antenne hat.
 
 Damit valide ip Adressen vergeben werden müssen die folgenden Zeilen der Datei  `/etc/dhcpcd.conf` angefügt werden:
+
+```bash
+    sudo nano /etc/dhcpcd.conf
+```
+
 ```bash
 interface uap0
     static ip_address=10.10.51.1/24
@@ -193,10 +198,7 @@ sudo mv mobivideo/config/dnsmasq.conf /etc/dnsmasq.conf
 
 Damit alle dazugehörenden Services in der richtigen Reihenfolge ausgeführt werden werden diese erstmal deaktiviert und über ein Skript gesteuert.
 ```bash 
-sudo systemctl unmask hostapd.service
-sudo systemctl disable hostapd.service
-sudo systemctl disable dhcpcd.service
-sudo systemctl disable dnsmasq.service
+sudo systemctl unmask hostapd.service && sudo systemctl disable hostapd.service && sudo systemctl disable dhcpcd.service && sudo systemctl disable dnsmasq.service
 ``` 
 Dann kopieren wir das Skript an die richtige Stelle:
 ```bash
@@ -205,6 +207,10 @@ sudo cp mobivideo/config/wifistart.sh /usr/local/bin/wifistart.sh
 
 Zuletzt muss noch folgende Zeile (vor exit 0) im Skript `/etc/rc.local` hinzugefügt werden damit das `wifistart.sh` Skript bei boot ausgeführt wird.
 
+```bash
+    sudo reboot
+```
+Anschließend wieder mit dem Raspberry verbinden
 
 ## mobivideo einrichten
 ### Virtuelle Python Umgebung erstellen:
@@ -221,7 +227,7 @@ venv/bin/pip install -r requirements.txt
 ### Einrichten des `systemd` Services
 Damit die mobivideo Software automatisch bei Boot startet muss ein Service erstellt werden. Dafür kann das Skript aus dem Repository verwendet werden, indem wir es an die richtige Stelle verschieben.
 ```bash
-sudo mv nano /home/pi/mobivideo/config/mobivideo.service /etc/systemd/system/mobivideo.service
+sudo mv /home/pi/mobivideo/config/mobivideo.service /etc/systemd/system/mobivideo.service
 ```
 Nun muss noch eingerichtet werden, dass der Service bei jedem Boot startet.
 ```bash

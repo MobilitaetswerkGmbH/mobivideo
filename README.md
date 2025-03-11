@@ -58,7 +58,7 @@ Beende das Konfigurationstool, indem du "Finish" auswählst, und starte den Rasp
 Wir deaktivieren Bluetooth, die Kamera und die Onboard-LEDs. Dafür bearbeiten wir die Datei `/boot/config.txt`.
 1. Öffne die Datei `/boot/config.txt` mit dem Texteditor `nano`:
 	```bash
-	sudo nano /boot/config.txt
+	sudo nano /boot/firmware/config.txt
 	```
 2. Die Konfigurationsdatei ist ziemlich lang. Scrolle bis zum Ende der Datei und füge folgende Zeilen hinzu, um die gewünschten Funktionen zu deaktivieren:
 	```bash
@@ -69,7 +69,9 @@ Wir deaktivieren Bluetooth, die Kamera und die Onboard-LEDs. Dafür bearbeiten w
 	dtparam=audio=off
 	display_auto_detect=0
 	dtoverlay=i2c-rtc,pcf8523
-	```	
+	```
+Mit STRG-O speichern, mit Enter den Dateipfad bestätigen un mit STRG-X den Editor verlassen.
+ 
 Um die neuen Einstellungen zu aktivieren muss der Raspberry neu gestartet werden.
 ```bash
 sudo reboot

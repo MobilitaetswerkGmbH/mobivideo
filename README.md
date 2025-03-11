@@ -222,7 +222,7 @@ sudo python3 -m venv venv
 ```
 Requirements installieren:
 ```bash
-venv/bin/pip install -r requirements.txt
+sudo chown -R pi:pi /home/pi/mobivideo/venv/ && venv/bin/pip install -r requirements.txt
 ```
 ### Einrichten des `systemd` Services
 Damit die mobivideo Software automatisch bei Boot startet muss ein Service erstellt werden. Dafür kann das Skript aus dem Repository verwendet werden, indem wir es an die richtige Stelle verschieben.

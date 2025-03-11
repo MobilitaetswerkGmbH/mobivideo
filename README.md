@@ -70,7 +70,7 @@ Wir deaktivieren Bluetooth, die Kamera und die Onboard-LEDs. Dafür bearbeiten w
 	display_auto_detect=0
 	dtoverlay=i2c-rtc,pcf8523
 	```
-Mit STRG-O speichern, mit Enter den Dateipfad bestätigen un mit STRG-X den Editor verlassen.
+Speichere die Datei mit <kbd>Strg</kbd> + <kbd>O</kbd>, bestätige mit <kbd>Enter</kbd>, und schließe den Editor mit <kbd>Strg</kbd> + <kbd>X</kbd>.
  
 Um die neuen Einstellungen zu aktivieren muss der Raspberry neu gestartet werden.
 ```bash
@@ -100,8 +100,8 @@ Du solltest eine Ausgabe mit mehreren Zeilen sehen, in denen `UU` in einer davon
 
 Anschließend muss die fake-hardware Uhr noch deaktiviert werden.
 ```bash
-	sudo apt remove fake-hwclock -y
-	sudo update-rc.d -f fake-hwclock remove
+	sudo apt remove fake-hwclock -y &&
+	sudo update-rc.d -f fake-hwclock remove &&
 	sudo systemctl disable fake-hwclock
 ```
 Außerdem müssen bestimmte Zeilen in der Datei `/lib/udev/hwclock-set` kommentiert werden, um sicherzustellen, dass die RTC korrekt funktioniert:

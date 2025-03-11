@@ -38,11 +38,10 @@ Dieser Prozess kann einige Minuten dauern.
 
 #### Repository clonen:
 ```bash
-sudo apt install python3-pip git -y
-git clone https://github.com/MobilitaetswerkGmbH/mobivideo.git
+sudo apt install python3-pip git -y && git clone https://github.com/MobilitaetswerkGmbH/mobivideo.git
 ```
 ### Raspi Config
-Verbinde dich erneut mit deinem Raspberry Pi (öffne PowerShell und führe den Befehl `ssh pi@otcamera01` aus) und starte das Raspberry-Konfigurationstool.
+Verbinde dich erneut mit deinem Raspberry Pi (öffne PowerShell und führe den Befehl `ssh pi@mobipi01` (bzw. andere ID aus) und starte das Raspberry-Konfigurationstool.
 `sudo raspi-config`
 Ändere die folgenden Einstellungen auf die passenden Werte:
 

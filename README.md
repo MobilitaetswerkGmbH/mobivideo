@@ -290,7 +290,7 @@ Packliste:
 * 20 Geräte in 20 Kästen
 * 20 Akkus
 * 20 Befestigungen
-* Kreide
+* Kreide und Maßband
   
 ### Am Standort
  1. Koffer am Standort öffnen und Akku anstecken. 
@@ -298,7 +298,7 @@ Packliste:
  3. Im WLAN-Netzwerk des Geräts anmelden.
  4. Im Browser `http://<hostname>:5000` oder `http://10.42.0.1:5000` aufrufen.
  5. Mit "Capture Preview" Sichtfeld der Kamera überprüfen und eventuell Ausrichtung mit Stativkopf anpassen.
- 6. Mit
+ 6. Mit Kreide eine Markierung quer über die Straße zeichnen (an dieser Stelle wird gemessen), die Länge der Linie messen.
  7. Solange nicht der Standard Plan von 5:00-23:00 Uhr verwendet werden soll diesen anpassen. Mit "Set Schedule" bestätigen.
  8. "Disable Wi-Fi and Bluetooth" um Akku zu sparen.
 

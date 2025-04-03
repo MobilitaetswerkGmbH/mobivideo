@@ -165,7 +165,7 @@ Speichere die Datei mit <kbd>Strg</kbd> + <kbd>O</kbd>, bestätige mit <kbd>Ente
 	```
 	Dafür die folgenden Zeilen einfügen den WLAN-Namen anpassen, ein Passwort vergeben und speichern.
 	```bash 
-	channel=1
+	channel=6
 	ssid=mobipi01W
 	wpa_passphrase=PASSWORT
 	interface=uap0
@@ -282,28 +282,47 @@ Ist die Kamera anders verbaut, kann ihre Rotation angepasst werden: Zeile 36: `c
 Videos werden im Format `<hostname>_FR<fps>_<YYYY-MM-DD_HH-SS>.h264` benannt, somit müssen FPS und Anfangszeit bei Konvertierung mit OTVision nicht mehr manuell angegeben werden.
 
 ## Nutzung
+### Checkliste bevor es losgeht
+* Akkus geladen?
+* Geräte testen, ob im Ordner Videos schon was vorhanden ist.
+
+Packliste:
+* 20 Geräte in 20 Kästen
+* 20 Akkus
+* 20 Befestigungen
+* Kreide
+  
 ### Am Standort
  1. Koffer am Standort öffnen und Akku anstecken. 
  2. Koffer verschließen und aufhängen.
  3. Im WLAN-Netzwerk des Geräts anmelden.
  4. Im Browser `http://<hostname>:5000` oder `http://10.42.0.1:5000` aufrufen.
  5. Mit "Capture Preview" Sichtfeld der Kamera überprüfen und eventuell Ausrichtung mit Stativkopf anpassen.
- 6. Solange nicht der Standard Plan von 5:00-23:00 Uhr verwendet werden soll diesen anpassen. Mit "Set Schedule" bestätigen.
- 7. "Disable Wi-Fi and Bluetooth" um Akku zu sparen.
+ 6. Mit
+ 7. Solange nicht der Standard Plan von 5:00-23:00 Uhr verwendet werden soll diesen anpassen. Mit "Set Schedule" bestätigen.
+ 8. "Disable Wi-Fi and Bluetooth" um Akku zu sparen.
 
 ### Zurück im Büro
 Die aufgenommenen Videos können von den Geräten über WLAN mit `scp` heruntergeladen werden. Dafür muss ein Gerät angeschalten werden, sich mit dem WLAN Netzwerk verbunden werden und der folgende Befehl in der Konsole eingeben werden. Dabei wird erst die remote und dann die local-destination angegeben. 
 ```bash 
-scp pi@hostname:/home/pi/Videos/*.h264 .\Desktop\Videos\ProjektName
+scp pi@mobipi01:~/Videos/*.h264 C:\Users\DEIN_BENUTZERNAME\Desktop\Videos\Mobipi01Test\
 ```
 z.B.
 ```bash 
 scp pi@mobipi01:/home/pi/Videos/*.h264 .\Desktop\Videos\Dresden
 ```
+Daraufhin wird das Passwort des Mobipis abgefragt.
+Falls einzelne Videos nicht komplett heruntergeladen wurden, können diese nocheinmal einzeln heruntergeladen werden. Dafür den Namen des Videos kopieren und damit das * (Sternchen) ersetzen. 
 Anschließend können die Video Dateien auf dem Gerät gelöscht werden. Dafür mit Gerät per SSH verbinden und 
 ```bash
 	rm Videos/*
 ```
 eingeben.
 Nun den Vorgang mit den restlichen Geräten wiederholen.
+
+### Daten auswerten
+
+Die h264-Dateien auf den Standcomputer laden und in einen Ordner packen. Die Pythondatei OThelper öffnen und den Pfad zu dem Ordner mit den Videos angeben. Anschließend die Länge der einzelnen Videos (im Normalfall eine Stunde -> 3600 s) angeben; dieses Feld ist auf 3600 voreingestellt.
+
+
 

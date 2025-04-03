@@ -298,7 +298,7 @@ Packliste:
  3. Im WLAN-Netzwerk des Geräts anmelden.
  4. Im Browser `http://<hostname>:5000` oder `http://10.42.0.1:5000` aufrufen.
  5. Mit "Capture Preview" Sichtfeld der Kamera überprüfen und eventuell Ausrichtung mit Stativkopf anpassen.
- 6. Mit Kreide eine Markierung quer über die Straße zeichnen (an dieser Stelle wird gemessen), die Länge der Linie messen.
+ 6. Mit Kreide zwei Markierungen quer über die Straße zeichnen, möglichst weit voneinander entfernt (um Geschwindigkeit messen zu können), Abstand zwischen den Linien messen.
  7. Solange nicht der Standard Plan von 5:00-23:00 Uhr verwendet werden soll diesen anpassen. Mit "Set Schedule" bestätigen.
  8. "Disable Wi-Fi and Bluetooth" um Akku zu sparen.
 
